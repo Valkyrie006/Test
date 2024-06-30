@@ -6,10 +6,12 @@ import main.java.org.example.model.branch.Branch;
 import main.java.org.example.model.timeslot.TimeSlot;
 import main.java.org.example.model.vehicle.Vehicle;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 
 public class LowestPriceSelectionStrategyImpl implements VehicleSelectionStrategy {
 
@@ -23,8 +25,8 @@ public class LowestPriceSelectionStrategyImpl implements VehicleSelectionStrateg
                 if (selectedVehicle == null || selectedVehicle.getPricePerTimeSlot() > vehicle.getPricePerTimeSlot()) {
                     boolean isPossibleToBook = true;
                     for (TimeSlot bookedSlots: vehicle.getBookingSlots()) {
-                        if ((timeSlot.getStartTime().isBefore(bookedSlots.getEndTime()) && timeSlot.getStartTime().isAfter(bookedSlots.getStartTime()))
-                        || (timeSlot.getEndTime().isBefore(bookedSlots.getEndTime()) && timeSlot.getEndTime().isAfter(bookedSlots.getStartTime()))) {
+                        if ((isBeforeByHour(timeSlot.getStartTime(), bookedSlots.getEndTime()) && isAfterByHour(timeSlot.getStartTime(), bookedSlots.getStartTime()))
+                        || (isBeforeByHour(timeSlot.getEndTime(), bookedSlots.getEndTime()) && isAfterByHour(timeSlot.getEndTime(), bookedSlots.getStartTime()))) {
                             isPossibleToBook = false;
                             break;
                         }
@@ -36,6 +38,32 @@ public class LowestPriceSelectionStrategyImpl implements VehicleSelectionStrateg
             }
         }
         return selectedVehicle;
+    }
+
+    private static boolean isBeforeByHour(LocalDateTime dt1, LocalDateTime dt2) {
+        if (dt1.getYear() != dt2.getYear()) {
+            return dt1.getYear() < dt2.getYear();
+        }
+        if (dt1.getMonthValue() != dt2.getMonthValue()) {
+            return dt1.getMonthValue() < dt2.getMonthValue();
+        }
+        if (dt1.getDayOfMonth() != dt2.getDayOfMonth()) {
+            return dt1.getDayOfMonth() < dt2.getDayOfMonth();
+        }
+        return dt1.getHour() <= dt2.getHour();
+    }
+
+    private static boolean isAfterByHour(LocalDateTime dt1, LocalDateTime dt2) {
+        if (dt1.getYear() != dt2.getYear()) {
+            return dt1.getYear() > dt2.getYear();
+        }
+        if (dt1.getMonthValue() != dt2.getMonthValue()) {
+            return dt1.getMonthValue() > dt2.getMonthValue();
+        }
+        if (dt1.getDayOfMonth() != dt2.getDayOfMonth()) {
+            return dt1.getDayOfMonth() > dt2.getDayOfMonth();
+        }
+        return dt1.getHour() >= dt2.getHour();
     }
 
 }

@@ -51,8 +51,8 @@ public class Main {
 
         TimeSlot timeSlot = new TimeSlot(LocalDateTime.now().plusHours(2), LocalDateTime.now().plusHours(3));
         Vehicle vehicle = bookingService.rentVehicleByVehicleTypeAndTimeSlot(renter, VehicleType.SEDAN, timeSlot);
-
-        Vehicle vehicle1 = bookingService.rentVehicleByVehicleTypeAndTimeSlot(renter, VehicleType.SEDAN, timeSlot);
         System.out.println(vehicle);
+        Vehicle vehicle1 = bookingService.rentVehicleByVehicleTypeAndTimeSlot(renter, VehicleType.SUV, timeSlot);
+        System.out.println(vehicle1); // null
     }
 }

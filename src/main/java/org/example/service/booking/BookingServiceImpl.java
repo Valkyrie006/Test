@@ -11,6 +11,7 @@ import main.java.org.example.model.vehicle.Vehicle;
 import main.java.org.example.service.branch.BranchService;
 import main.java.org.example.strategy.VehicleSelectionStrategy;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -32,7 +33,14 @@ public class BookingServiceImpl implements BookingService {
         Map<Integer, Branch> branchMap = branchService.getAllBranches();
         VehicleSelectionStrategy vehicleSelectionStrategy = VehicleSelectionFactory.getVehicleSelectionFactory(VehicleSelection.LOWEST_PRICE);
         Vehicle vehicle = vehicleSelectionStrategy.selectVehicle(vehicleType, timeSlot, branchMap);
+        if (vehicle == null) {
+            return null;
+        }
         List<TimeSlot> timeSlotList = vehicle.getBookingSlots();
+
+        if (timeSlotList == null) {
+            timeSlotList = new ArrayList<>();
+        }
         timeSlotList.add(timeSlot);
         vehicle.setBookingSlots(timeSlotList);
         return vehicle;
